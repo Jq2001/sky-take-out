@@ -3,8 +3,10 @@ package com.sky.controller.admin;
 import com.sky.constant.JwtClaimsConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.properties.JwtProperties;
+import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.EmployeeService;
 import com.sky.service.impl.EmployeeServiceImpl;
@@ -13,10 +15,7 @@ import com.sky.vo.EmployeeLoginVO;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,12 +33,6 @@ public class EmployeeController {
     @Autowired
     private JwtProperties jwtProperties;
 
-    @PostMapping
-    @ApiOperation("新增员工")
-    public Result add(@RequestBody EmployeeDTO employeeDTO) {// @RequestBody告诉Spring从HTTP请求体中读取JSON数据
-        employeeService.add(employeeDTO);
-        return Result.success();
-    }
 
     /**
      * 登录
@@ -69,6 +62,45 @@ public class EmployeeController {
                 .build();
 
         return Result.success(employeeLoginVO);
+    }
+
+    /**
+     * 新增员工
+     *
+     * @param employeeDTO
+     * @return
+     */
+    @PostMapping
+    @ApiOperation("新增员工")
+    public Result add(@RequestBody EmployeeDTO employeeDTO) {// @RequestBody告诉Spring从HTTP请求体中读取JSON数据
+        employeeService.add(employeeDTO);
+        return Result.success();
+    }
+
+    /**
+     * 员工分页
+     *
+     * @param dto
+     * @return
+     */
+    @GetMapping("/page")
+    @ApiOperation("员工分页")
+    public Result page(EmployeePageQueryDTO dto) {
+        PageResult pageResult = employeeService.page(dto);
+        return Result.success(pageResult);
+    }
+
+    /**
+     * 启用或禁用员工账号
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("启用或禁用员工账号")
+    public Result updateState(@PathVariable Integer  status,Long id) {
+        employeeService.updateStatus(status,id);
+        return Result.success();
     }
 
     /**
