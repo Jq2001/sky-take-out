@@ -106,6 +106,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new PageResult(page.getTotal(), page.getResult());
     }
 
+    /**
+     * 启动或者禁用员工状态
+     * @param status
+     * @param id
+     */
     @Override
     public void updateStatus(Integer status, Long id) {
 //        Employee e =new Employee();
@@ -114,5 +119,28 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employeeMapper.update( Employee.builder().status(status).id(id).build());
     }
+
+    @Override
+    public Employee findById(Long id) {
+        Employee employee = employeeMapper.findById(id);
+        if (employee == null){
+            return null;
+        }
+        employee.setPassword("****");
+        return employee;
+
+    }
+
+    @Override
+    public void update(EmployeeDTO employeeDTO) {
+
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO,employee);
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+        employeeMapper.update(employee);
+
+    }
+
 
 }
