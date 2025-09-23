@@ -5,11 +5,14 @@ import com.sky.dto.DishPageQueryDTO;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.DishService;
+import com.sky.vo.DishVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Api(tags = "菜品接口")
 @RequestMapping("/admin/dish")
@@ -36,5 +39,31 @@ public class DishController {
         log.info("分页查询菜品列表:{}",dishPageQueryDTO);
         PageResult pageResult = dishService.page(dishPageQueryDTO);
         return Result.success(pageResult);
+    }
+
+    /**
+     * 删除菜品
+     * @param ids
+     * @return
+     */
+    @ApiOperation("删除菜品")
+    @DeleteMapping
+    public Result delete(@RequestParam List<Long> ids){
+        log.info("删除菜品:{}",ids);
+        dishService.delete(ids);
+        return Result.success();
+    }
+
+    /**
+     * 回显菜品
+     * @param id
+     * @return
+     */
+    @ApiOperation("根据id查询菜品")
+    @GetMapping("/{id}")
+    public  Result getById(@PathVariable Long id){
+        log.info("回显菜品:{}",id);
+        DishVO dishVO = dishService.getById(id);
+        return Result.success(dishVO);
     }
 }
