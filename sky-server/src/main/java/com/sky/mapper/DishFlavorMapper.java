@@ -15,5 +15,11 @@ public interface DishFlavorMapper {
     void deleteBatch(List<Long> ids);
 
     List<DishFlavor> selectById(Long id);
+
+    /**
+     * 根据菜品id删除口味
+     * @param id
+     */
+    void deleteByDishId(Long id);
 }
 

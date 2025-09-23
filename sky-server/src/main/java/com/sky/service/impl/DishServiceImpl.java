@@ -49,7 +49,7 @@ public class DishServiceImpl implements DishService {
         dishFlavorMapper.add(flavorList);
     }
 
-    @ApiOperation("分页查询")
+
     @Override
     public PageResult page(DishPageQueryDTO dishPageQueryDTO) {
         //1.设置分页参数
@@ -62,7 +62,7 @@ public class DishServiceImpl implements DishService {
     public void delete(List<Long> ids) {
         ids.forEach(id -> {
             Dish dish = dishMapper.selectById(id);
-        //判断当前菜品是否能够删除---是否存在起售中的菜品
+            //判断当前菜品是否能够删除---是否存在起售中的菜品
             if (dish.getStatus() == StatusConstant.ENABLE) {
                 throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
             }
@@ -82,9 +82,31 @@ public class DishServiceImpl implements DishService {
     public DishVO getById(Long id) {
         DishVO dishVO = new DishVO();
         Dish dish = dishMapper.selectById(id);
-        BeanUtils.copyProperties(dish,dishVO);
+        BeanUtils.copyProperties(dish, dishVO);
         List<DishFlavor> flavorList = dishFlavorMapper.selectById(id);
         dishVO.setFlavors(flavorList);
         return dishVO;
+    }
+
+    /**
+     * 修改菜品
+     *
+     * @param dishDTO
+     */
+    @Override
+    @Transactional
+    public void update(DishDTO dishDTO) {
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+        dishMapper.update(dish);
+        //不知道对口味有多少操作 先删除全部数据 再插入新的数据
+        dishFlavorMapper.deleteByDishId(dishDTO.getId());
+        List<DishFlavor> flavorList = dishDTO.getFlavors();
+
+        if (flavorList != null && !flavorList.isEmpty()){
+//            关联菜品id
+        flavorList.forEach(flavor -> flavor.setDishId(dishDTO.getId()));
+        }
+        dishFlavorMapper.add(flavorList);
     }
 }

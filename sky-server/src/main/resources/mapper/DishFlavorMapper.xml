@@ -15,6 +15,9 @@
             #{id}
         </foreach>
     </delete>
+    <delete id="deleteByDishId">
+        delete from dish_flavor  where dish_id = #{id}
+    </delete>
 
     <select id="selectById" resultType="com.sky.entity.DishFlavor" >
         select * from dish_flavor where dish_id = #{id}
