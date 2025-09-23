@@ -43,7 +43,7 @@ public class AutoFillAspect {
             //获取到了参数的字节码对象
             Class aClass = arg.getClass();
             //获取属性
-            Field f1 = aClass.getDeclaredField("creatTime");
+            Field f1 = aClass.getDeclaredField("createTime");
             Field f2 = aClass.getDeclaredField("updateTime");
             Field f3 = aClass.getDeclaredField("createUser");
             Field f4 = aClass.getDeclaredField("updateUser");
