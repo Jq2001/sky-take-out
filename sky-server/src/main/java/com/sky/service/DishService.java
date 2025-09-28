@@ -49,4 +49,11 @@ public interface DishService {
      * @return
      */
     List<DishVO> listWithFlavor(Dish dish);
+
+    /**
+     * 启售或停售
+     * @param status
+     * @param id
+     */
+    void turnOnOff(Integer status, Long id);
 }
