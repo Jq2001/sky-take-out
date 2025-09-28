@@ -10,6 +10,6 @@ public interface UserMapper {
     User selectByOpenId(String openid);
 
     @Options(useGeneratedKeys = true,keyProperty = "id")
-    @Insert("insert into user(openid,name,create_time) values (#{openid},#{name},#{create_time})")
+    @Insert("insert into user(openid,name,create_time) values (#{openid},#{name},#{createTime})")
     void insert(User user);
 }
