@@ -16,8 +16,6 @@ import com.sky.mapper.SetmealDishMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
-import io.swagger.annotations.ApiOperation;
-import jdk.net.SocketFlow;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -47,7 +44,7 @@ public class DishServiceImpl implements DishService {
 
 
         List<DishFlavor> flavorList = dishDTO.getFlavors();
-        if (flavorList.size() > 0) {
+        if (flavorList!=null&&!flavorList.isEmpty()) {
             flavorList.forEach(dishFlavor -> dishFlavor.setDishId(dish.getId()));
         }
         dishFlavorMapper.add(flavorList);
@@ -73,8 +70,8 @@ public class DishServiceImpl implements DishService {
         });
 
         //判断当前菜品是否能够删除---是否被套餐关联
-        Integer count = setmealDishMapper.countByDishId(ids);
-        if (count > 0) {
+        List<Long> setmealIds = setmealDishMapper.getSetmealIdsByDishIds(ids);
+        if (setmealIds != null && !setmealIds.isEmpty()) {
             throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
         }
 
@@ -146,5 +143,11 @@ public class DishServiceImpl implements DishService {
     public void turnOnOff(Integer status, Long id) {
         Dish dish = Dish.builder().id(id).status(status).updateTime(LocalDateTime.now()).updateUser(BaseContext.getCurrentId()).build();
         dishMapper.update(dish);
+    }
+
+    @Override
+    public List<Dish> list(Dish dish) {
+        List<Dish> dishList = dishMapper.ListByCId(dish);
+        return dishList;
     }
 }
